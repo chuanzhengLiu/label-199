@@ -42,6 +42,10 @@
           <el-icon><DataLine /></el-icon>
           <template #title>数据统计</template>
         </el-menu-item>
+        <el-menu-item index="/inventory">
+          <el-icon><Files /></el-icon>
+          <template #title>资产盘点</template>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -85,14 +89,20 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Expand, Fold, ArrowDown, Monitor, User, List, Tools, Delete, DataLine, ShoppingCart } from '@element-plus/icons-vue'
+import { Expand, Fold, ArrowDown, Monitor, User, List, Tools, Delete, DataLine, ShoppingCart, Files } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const isCollapse = ref(false)
 
-const activeMenu = computed(() => route.path)
+const activeMenu = computed(() => {
+    let path = route.path
+    if (path.startsWith('/inventory/execute') || path.startsWith('/inventory/report')) {
+        return '/inventory'
+    }
+    return path
+})
 
 const currentRouteName = computed(() => {
     const map = {
@@ -102,9 +112,15 @@ const currentRouteName = computed(() => {
         '/maintenance': '维修记录',
         '/scraps': '报废记录',
         '/statistics': '数据统计',
-        '/purchases': '采购申请'
+        '/purchases': '采购申请',
+        '/inventory': '盘点任务',
+        '/inventory/execute': '执行盘点',
+        '/inventory/report': '差异报告'
     }
-    return map[route.path] || '当前页面'
+    let path = route.path
+    if (path.startsWith('/inventory/execute')) path = '/inventory/execute'
+    if (path.startsWith('/inventory/report')) path = '/inventory/report'
+    return map[path] || '当前页面'
 })
 
 const toggleCollapse = () => {
