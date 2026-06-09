@@ -42,6 +42,10 @@
           <el-icon><DataLine /></el-icon>
           <template #title>数据统计</template>
         </el-menu-item>
+        <el-menu-item index="/inventory">
+          <el-icon><Tickets /></el-icon>
+          <template #title>资产盘点</template>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -85,7 +89,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Expand, Fold, ArrowDown, Monitor, User, List, Tools, Delete, DataLine, ShoppingCart } from '@element-plus/icons-vue'
+import { Expand, Fold, ArrowDown, Monitor, User, List, Tools, Delete, DataLine, ShoppingCart, Tickets } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -102,9 +106,17 @@ const currentRouteName = computed(() => {
         '/maintenance': '维修记录',
         '/scraps': '报废记录',
         '/statistics': '数据统计',
-        '/purchases': '采购申请'
+        '/purchases': '采购申请',
+        '/inventory': '资产盘点'
     }
-    return map[route.path] || '当前页面'
+    const path = route.path
+    if (path.startsWith('/inventory/execute/')) {
+        return '执行盘点'
+    }
+    if (path.startsWith('/inventory/report/')) {
+        return '盘点报告'
+    }
+    return map[path] || '当前页面'
 })
 
 const toggleCollapse = () => {
