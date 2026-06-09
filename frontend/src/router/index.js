@@ -8,6 +8,9 @@ import ScrapList from '../views/ScrapList.vue'
 import Statistics from '../views/Statistics.vue'
 import PurchaseList from '../views/PurchaseList.vue'
 import UserList from '../views/UserList.vue'
+import InventoryList from '../views/InventoryList.vue'
+import InventoryCheck from '../views/InventoryCheck.vue'
+import InventoryReport from '../views/InventoryReport.vue'
 
 const routes = [
   {
@@ -54,6 +57,21 @@ const routes = [
         path: 'purchases',
         name: 'Purchases',
         component: PurchaseList
+      },
+      {
+        path: 'inventory',
+        name: 'Inventory',
+        component: InventoryList
+      },
+      {
+        path: 'inventory-check',
+        name: 'InventoryCheck',
+        component: InventoryCheck
+      },
+      {
+        path: 'inventory-report',
+        name: 'InventoryReport',
+        component: InventoryReport
       }
     ]
   }

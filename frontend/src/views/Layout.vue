@@ -38,6 +38,10 @@
           <el-icon><ShoppingCart /></el-icon>
           <template #title>采购申请</template>
         </el-menu-item>
+        <el-menu-item index="/inventory" v-if="user.role === 'ADMIN' || user.role === 'MANAGER'">
+          <el-icon><Checked /></el-icon>
+          <template #title>资产盘点</template>
+        </el-menu-item>
         <el-menu-item index="/statistics" v-if="user.role === 'ADMIN' || user.role === 'MANAGER'">
           <el-icon><DataLine /></el-icon>
           <template #title>数据统计</template>
@@ -85,7 +89,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Expand, Fold, ArrowDown, Monitor, User, List, Tools, Delete, DataLine, ShoppingCart } from '@element-plus/icons-vue'
+import { Expand, Fold, ArrowDown, Monitor, User, List, Tools, Delete, DataLine, ShoppingCart, Checked } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -102,7 +106,10 @@ const currentRouteName = computed(() => {
         '/maintenance': '维修记录',
         '/scraps': '报废记录',
         '/statistics': '数据统计',
-        '/purchases': '采购申请'
+        '/purchases': '采购申请',
+        '/inventory': '资产盘点',
+        '/inventory-check': '盘点执行',
+        '/inventory-report': '盘点报告'
     }
     return map[route.path] || '当前页面'
 })
