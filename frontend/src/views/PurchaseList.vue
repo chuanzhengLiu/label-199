@@ -1,0 +1,106 @@
+<template>
+  <div class="purchase-list">
+    <el-card>
+      <template #header>
+        <div class="card-header">
+          <span>采购申请列表</span>
+        </div>
+      </template>
+
+      <el-table :data="tableData" style="width: 100%" v-loading="loading">
+        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="categoryName" label="资产类别" />
+        <el-table-column prop="quantity" label="数量" width="100" />
+        <el-table-column prop="remarks" label="备注" />
+        <el-table-column prop="createTime" label="申请时间" />
+        <el-table-column prop="status" label="状态">
+           <template #default="scope">
+              <el-tag :type="getStatusType(scope.row.status)">{{ getStatusText(scope.row.status) }}</el-tag>
+           </template>
+        </el-table-column>
+      </el-table>
+
+      <div class="pagination">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="total"
+          :page-size="pageSize"
+          @current-change="handlePageChange"
+        />
+      </div>
+    </el-card>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
+
+const loading = ref(false)
+const tableData = ref([])
+const total = ref(0)
+const pageSize = ref(10)
+const currentPage = ref(1)
+
+const fetchData = async () => {
+  loading.value = true
+  try {
+    const res = await axios.get('/api/purchase/list', {
+      params: { page: currentPage.value, size: pageSize.value }
+    })
+    if (res.data.code === 200) {
+      tableData.value = res.data.data.records
+      total.value = res.data.data.total
+    }
+  } catch (error) {
+    ElMessage.error('获取数据失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+const getStatusType = (status) => {
+    const map = {
+        'PENDING': 'warning',
+        'APPROVED': 'success',
+        'REJECTED': 'danger'
+    }
+    return map[status] || 'info'
+}
+
+const getStatusText = (status) => {
+    const map = {
+        'PENDING': '待审批',
+        'APPROVED': '已批准',
+        'REJECTED': '已拒绝'
+    }
+    return map[status] || status
+}
+
+const handlePageChange = (val) => {
+    currentPage.value = val
+    fetchData()
+}
+
+onMounted(() => {
+    fetchData()
+})
+</script>
+
+<style scoped>
+.purchase-list {
+  padding: 20px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+</style>
